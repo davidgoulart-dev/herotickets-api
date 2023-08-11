@@ -9,6 +9,7 @@ describe('Event test', () => {
         const event = {
             title: "Jorge e Mateus",
             price: [{ sector: 'Pista', amount: '20' }],
+            categories:['Show'],
             description: 'Evento descrição',
             city: 'Rio de Janeiro',
             location: {
@@ -46,3 +47,4 @@ describe('Event test', () => {
         expect(response.body).toEqual({ message: 'Evento criado com sucesso.' })
     });
 });
+

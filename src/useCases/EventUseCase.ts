@@ -1,5 +1,7 @@
 import { EventRepository } from "../repositories/EventRepository";
-import { Event } from "../entities/Event";
+
+import { Event } from '../entities/Event';
+
 
 class EventUseCase {
     constructor(private eventRepository: EventRepository) {}

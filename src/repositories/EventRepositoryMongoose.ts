@@ -1,4 +1,6 @@
 import mongoose from "mongoose"
+import { Event } from '../entities/Event';
+
 
 const eventSchema = new mongoose.Schema({
     title: String,

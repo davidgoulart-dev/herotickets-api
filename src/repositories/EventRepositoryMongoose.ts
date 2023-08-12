@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import { Event } from '../entities/Event';
+import { Location } from "../entities/Location";
 
 
 const eventSchema = new mongoose.Schema({
@@ -37,6 +38,22 @@ class EventRepositoryMongoose {
         const eventModel = new EventModel(event)
         await eventModel.save()
         return event;
+    }
+    async findByLocationAndDate(location: Location, date: Date): Promise<Event | undefined>{
+        const findEvent = await EventModel.findOne({location, date}).exec()
+        
+        return findEvent ? findEvent.toObject() : undefined;
+    }
+    async findEventsByCity(city: string): Promise<Event[]>{
+        const findEvent = await EventModel.find({ city }).exec()
+        
+       return findEvent.map((event)=> event.toObject())
+    }
+
+    async findEventsByCategory(category: string): Promise<Event[]>{
+        const findEvent = await EventModel.find({ categories: category }).exec()
+        
+       return findEvent.map((event)=> event.toObject())
     }
 }
 

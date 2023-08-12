@@ -13,8 +13,8 @@ describe('Event test', () => {
             description: 'Evento descrição',
             city: 'Rio de Janeiro',
             location: {
-                latitude: "-22.912376",
-                longitude: "-43.230320"
+                latitude: "-22.9138967",
+                longitude: "-43.2375033"
             },
             coupons: [],
             date: new Date(),
@@ -31,6 +31,7 @@ describe('Event test', () => {
             .field('description', event.description)
             .field('city', event.city)
             .field('coupons', event.coupons)
+            .field('categories', event.categories)
             .field('location[latitude]', event.location.latitude)
             .field('location[longitude]', event.location.longitude)
             .field('price[sector]', event.price[0].sector)

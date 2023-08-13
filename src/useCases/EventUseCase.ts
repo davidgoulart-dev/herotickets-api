@@ -3,6 +3,7 @@ import { EventRepository } from "../repositories/EventRepository";
 import { Event } from '../entities/Event';
 import { HttpException } from "../interfaces/HttpException";
 import axios from "axios";
+import { UserRepositoryMongoose } from "../repositories/UserRepositoryMongoose";
 
 
 class EventUseCase {
@@ -12,6 +13,9 @@ async create(eventData: Event) {
         throw new HttpException(400, 'Banner is required')
     }
     if(!eventData.flyers) throw new HttpException(400, 'Flyers is required');
+
+    if(!eventData.date) throw new HttpException(400, 'Date is required');
+
 
     if(!eventData.location) throw new HttpException(400, 'Location is required');
 
@@ -61,6 +65,46 @@ async create(eventData: Event) {
 
 
     return events
+ }
+ async findEventsByName(name: string){
+    if(!name) throw new HttpException(400, 'Name is required')
+    const events = await this.eventRepository.findEventsByName(name)
+
+
+    return events
+ }
+ async findEventsById(id: string){
+    if(!id) throw new HttpException(400, 'Id is required')
+    const events = await this.eventRepository.findEventById(id)
+
+
+    return events
+ }
+ async addParticipant(id: string, name: string, email: string){
+    const event = await this.eventRepository.findEventById(id)
+
+    if(!event) throw new HttpException(400, 'Event not found')
+
+    const userRepository = new UserRepositoryMongoose()
+    const participant = {
+        name,
+        email
+    };
+    let user: any = {}
+    const verifyIsUserExists = await userRepository.verifyIsUserExists(email)
+    if(!verifyIsUserExists){
+       
+        user = await userRepository.add(participant)
+    }else{
+        user = verifyIsUserExists
+    }
+    if(event.participants.includes(user._id)) throw new HttpException(400, 'User Already exists')
+    
+
+    event.participants.push(user._id)
+
+    const updateEvent = await this.eventRepository.update(event, id)
+    return event
  }
 // AIzaSyD7TK-WgJuWoGXJZyRdUokj-5mj7sXBx9M
 private async getCityNameByCoordinates(

@@ -7,6 +7,7 @@ import { EventUseCase } from '../useCases/EventUseCase';
 class EventRoutes {
   public router: Router;
   private eventController: EventController;
+
   constructor() {
     this.router = Router();
     const eventRepository = new EventRepositoryMongoose();
@@ -14,6 +15,7 @@ class EventRoutes {
     this.eventController = new EventController(eventUseCase);
     this.initRoutes();
   }
+
   initRoutes() {
     this.router.post(
       '/',
@@ -29,10 +31,14 @@ class EventRoutes {
       ]),
       this.eventController.create.bind(this.eventController),
     );
-      this.router.get('/', this.eventController.findEventByLocation.bind(this.eventController))
-      this.router.get('/:id', this.eventController.findEventsById.bind(this.eventController))
-      this.router.get('/category/:category', this.eventController.findEventsByCategory.bind(this.eventController))
-      this.router.post('/:id/participants', this.eventController.addParticipant.bind(this.eventController))
-  }}
 
-    export {EventRoutes}
+    this.router.get('/', this.eventController.findEventByLocation.bind(this.eventController));
+    this.router.get('/filter', this.eventController.filterEvents.bind(this.eventController));
+    this.router.get('/category/:category', this.eventController.findEventsByCategory.bind(this.eventController));
+    this.router.get('/main', this.eventController.findMainEvents.bind(this.eventController));
+    this.router.get('/:id', this.eventController.findEventsById.bind(this.eventController));
+    this.router.post('/:id/participants', this.eventController.addParticipant.bind(this.eventController));
+  }
+}
+
+export { EventRoutes };

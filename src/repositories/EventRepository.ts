@@ -8,6 +8,11 @@ interface EventRepository {
 
     findEventsByCity(city: string): Promise<Event[]>
     findEventsByCategory(category: string): Promise<Event[]>
+    findEventsByFilter(  name:string,
+        date: Date,
+        category:string,
+        price:string): Promise<Event[]>
+    findEventsMain(date: Date): Promise<Event[]>
     findEventsByName(name: string): Promise<Event[]>
     findEventById(id: string): Promise<Event | undefined>
     update(event: Event, id: string): Promise<any>

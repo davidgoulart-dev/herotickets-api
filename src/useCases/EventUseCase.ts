@@ -33,7 +33,8 @@ async create(eventData: Event) {
         );
         eventData = {
             ...eventData,
-            city: cityName
+            city: cityName.cityName,
+            formattedAddress: cityName.formattedAddress
         }
 
 
@@ -45,7 +46,7 @@ async create(eventData: Event) {
     latitude,
     longitude
         );
-        const findEventsByCity = await this.eventRepository.findEventsByCity(cityName)
+        const findEventsByCity = await this.eventRepository.findEventsByCity(cityName.cityName)
 
 
         const eventWithRadius = findEventsByCity.filter(event => {
@@ -66,6 +67,30 @@ async create(eventData: Event) {
 
     return events
  }
+ async filterEvents(
+    latitude:number,
+    longitude:number,
+    name:string,
+    date: Date,
+    category:string,
+    radius:string,
+    price:string
+ ){
+   
+    const events = await this.eventRepository.findEventsByFilter( 
+        name,
+        date,
+        category,
+        price)
+
+
+    return events
+ }
+ async findEventsMain() {
+    const events = await this.eventRepository.findEventsMain(new Date());
+
+    return events;
+  }
  async findEventsByName(name: string){
     if(!name) throw new HttpException(400, 'Name is required')
     const events = await this.eventRepository.findEventsByName(name)
@@ -120,7 +145,11 @@ if(response.data.status === 'OK' && response.data.results.length > 0){
     const address = response.data.results[0].address_components
     const cityType = address.find((type:any)=> type.types.includes('administrative_area_level_2') &&
      type.types.includes('political') )
-     return cityType.long_name
+     const formattedAddress = response.data.results[0].formatted_address
+     return {
+        cityName: cityType.long_name,
+        formattedAddress,
+     }
 }
     throw new HttpException(404, 'City not found')
     }catch (error){

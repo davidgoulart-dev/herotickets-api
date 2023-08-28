@@ -13,7 +13,7 @@ describe('Event test', () => {
         const event = {
             title: "Jorge e Mateus",
             price: [{ sector: 'Pista', amount: '20' }],
-            categories:['Show'],
+            categories: ['Show'],
             description: 'Evento descrição',
             city: 'Rio de Janeiro',
             location: {
@@ -22,7 +22,8 @@ describe('Event test', () => {
             },
             coupons: [],
             date: new Date(),
-            participants: []
+            participants: [],
+            formattedAddress: "Avenida Exemplo, 123, Rio de Janeiro, RJ"
         };
 
         const bannerPath = path.join(__dirname, 'banner.jpg'); // Assuming banner.jpg is in the same folder as this test file
@@ -53,23 +54,23 @@ describe('Event test', () => {
         expect(response.body).toEqual({ message: 'Evento criado com sucesso.' })
     });
     it('/GET/:id Get Event by Id', async () => {
-       
+
         const response = await request(express)
             .get('/events/64d828191bb4682659163a71')
-           
+
 
         if (response.error) {
             console.log(response.error)
         }
 
         expect(response.status).toBe(200)
-        
+
     });
     it('/GET Get Event by Location', async () => {
-       
+
         const response = await request(express)
             .get('/events?latitude=-22.9138967&longitude=-43.2375033')
-           
+
 
         if (response.error) {
             console.log(response.error)
@@ -77,13 +78,13 @@ describe('Event test', () => {
 
         expect(response.status).toBe(200)
         expect(response.body.length).toBeGreaterThanOrEqual(0)
-        
+
     });
     it('/GET Get Event by category', async () => {
-       
+
         const response = await request(express)
             .get('/events/category/Show')
-           
+
 
         if (response.error) {
             console.log(response.error)
@@ -91,24 +92,24 @@ describe('Event test', () => {
 
         expect(response.status).toBe(200)
         expect(response.body.length).toBeGreaterThan(0)
-        
+
     });
     it('/POST Get insert User', async () => {
-       
+
         const response = await request(express)
             .post('/events/64d828191bb4682659163a71/participants').send({
                 name: 'David',
-                email: crypto.randomBytes(10).toString('hex')+'teste.com'
+                email: crypto.randomBytes(10).toString('hex') + 'teste.com'
             })
-           
+
 
         if (response.error) {
             console.log(response.error)
         }
 
         expect(response.status).toBe(200)
-        
-        
+
+
     });
 });
 const eventRepository = {
@@ -118,15 +119,16 @@ const eventRepository = {
     findEventsByCity: jest.fn(),
     findEventsByName: jest.fn(),
     findEventById: jest.fn(),
-    update: jest.fn()
+    update: jest.fn(),
+    findEventsMain: jest.fn()
 
 
 }
 const eventUseCase = new EventUseCase(eventRepository);
-const event:Event = {
+const event: Event = {
     title: "Jorge e Mateus",
     price: [{ sector: 'Pista', amount: '20' }],
-    categories:['Show'],
+    categories: ['Show'],
     description: 'Evento descrição',
     city: 'Rio de Janeiro',
     location: {
@@ -134,16 +136,17 @@ const event:Event = {
         longitude: "-43.2375033"
     },
     banner: 'banner.jpg',
-    flyers:['flyer1.png', 'flyer2.png'],
+    flyers: ['flyer1.png', 'flyer2.png'],
     coupons: [],
     date: new Date(),
-    participants: []
+    participants: [],
+    formattedAddress: "Avenida Exemplo, 123, Rio de Janeiro, RJ"
 };
-describe('Unit Test', ()=> {
-    afterEach(()=>{
+describe('Unit Test', () => {
+    afterEach(() => {
         jest.clearAllMocks()
     })
-    it('should return an array of events by category', async()=>{
+    it('should return an array of events by category', async () => {
         eventRepository.findEventsByCategory.mockResolvedValue([event])
         const result = await eventUseCase.findEventsByCategory('Show')
 
@@ -151,7 +154,7 @@ describe('Unit Test', ()=> {
         expect(eventRepository.findEventsByCategory).toHaveBeenCalledWith('Show')
     });
 
-    it('should return an array of events by name', async()=>{
+    it('should return an array of events by name', async () => {
         eventRepository.findEventsByName.mockResolvedValue([event])
         const result = await eventUseCase.findEventsByName('Jorge e Mateus')
 
@@ -159,7 +162,7 @@ describe('Unit Test', ()=> {
         expect(eventRepository.findEventsByName).toHaveBeenCalledWith('Jorge e Mateus')
     })
 
-    it('should return a event by Id', async()=>{
+    it('should return a event by Id', async () => {
         eventRepository.findEventById.mockResolvedValueOnce(event)
         const result = await eventUseCase.findEventsById('64d828191bb4682659163a71')
 

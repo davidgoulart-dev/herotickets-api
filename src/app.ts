@@ -2,6 +2,8 @@ import express, { Application } from 'express'
 import { connect } from './infra/database';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { EventRoutes } from './routes/event.routes';
+import cors from 'cors';
+import path from 'node:path' 
 
 class App {
     public app: Application;
@@ -21,6 +23,8 @@ private interceptionError() {
 }
 private middlewaresInitialize() {
     this.app.use(express.json());
+    this.app.use(cors());
+    this.app.use('/uploads',express.static(path.join(__dirname, './tmp/uploads')))
     this.app.use(express.urlencoded({ extended: true }));
 }
     listen() {

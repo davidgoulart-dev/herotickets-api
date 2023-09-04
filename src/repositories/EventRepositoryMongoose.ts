@@ -91,11 +91,7 @@ class EventRepositoryMongoose {
             title: {
                 $regex: name,
                 $options: 'i'
-            },
-            date: {
-                $gte: date,
-            },
-            categories: category
+            }
         }).exec()
 
         return findEvent.map((event) => event.toObject())
